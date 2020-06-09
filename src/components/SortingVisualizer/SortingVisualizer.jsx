@@ -4,6 +4,7 @@ import {
   getNodesInShortestPathOrder,
 } from "../../algorithms/djikstra";
 import Node from "../Node/Node";
+import Navbar from "../Navbar/Navbar";
 
 const START_NODE_ROW = 10;
 const START_NODE_COL = 15;
@@ -16,9 +17,12 @@ class SortingVisualizer extends Component {
     this.state = {
       grid: [],
       mouseIsPressed: false,
+      isRunning: false,
     };
 
     this.visualizeDijkstra = this.visualizeDijkstra.bind(this);
+    this.animateDijkstra = this.animateDijkstra.bind(this);
+    this.clearBoard = this.clearBoard.bind(this);
   }
 
   componentDidMount() {
@@ -41,6 +45,37 @@ class SortingVisualizer extends Component {
 
   handleMouseUp() {
     this.setState({ mouseIsPressed: false });
+  }
+
+  clearBoard() {
+    const { grid } = this.state;
+    const startNode = grid[START_NODE_ROW][START_NODE_COL];
+    const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+    const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
+
+    for (let i = 0; i < visitedNodesInOrder.length; i++) {
+      const node = visitedNodesInOrder[i];
+
+      document.getElementById(`node-${node.row}-${node.col}`).className =
+        "node";
+    }
+    if (visitedNodesInOrder[0].col === 15) {
+      document.getElementById(
+        `node-${startNode.row}-${startNode.col}`
+      ).className = "node node-start";
+    }
+    if (visitedNodesInOrder[visitedNodesInOrder.length - 1].col === 35) {
+      document.getElementById(
+        `node-${finishNode.row}-${finishNode.col}`
+      ).className = "node node-finish";
+    }
+    const newGrid = getGrid();
+
+    this.setState({
+      grid: newGrid,
+    });
+
+    console.log(visitedNodesInOrder);
   }
 
   animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
@@ -67,6 +102,7 @@ class SortingVisualizer extends Component {
           "node node-shortest-path";
       }, 50 * i);
     }
+    this.setState({ isRunning: false });
   }
 
   visualizeDijkstra() {
@@ -75,37 +111,59 @@ class SortingVisualizer extends Component {
     const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
     const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
+    this.setState({ isRunning: true });
     this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
   }
 
   render() {
     return (
-      <div className="visualize">
-        {this.state.grid.map((row, rowIndex) => {
-          return (
-            <div key={rowIndex} className="div-node">
-              {row.map((node, nodeIndex) => {
-                const { row, col, isFinish, isStart, isWall } = node;
-                return (
-                  <Node
-                    key={nodeIndex}
-                    col={col}
-                    isFinish={isFinish}
-                    isStart={isStart}
-                    isWall={isWall}
-                    row={row}
-                    mouseIsPressed={this.state.mouseIsPressed}
-                    onMouseDown={(row, col) => this.handleMouseDown(row, col)}
-                    onMouseEnter={(row, col) => this.handleMouseEnter(row, col)}
-                    onMouseUp={() => this.handleMouseUp()}
-                  />
-                );
-              })}
-            </div>
-          );
-        })}
-        <button onClick={this.visualizeDijkstra}>Visualize</button>
-      </div>
+      <>
+        <Navbar />
+        <div className="visualize">
+          {this.state.grid.map((row, rowIndex) => {
+            return (
+              <div key={rowIndex} className="div-node">
+                {row.map((node, nodeIndex) => {
+                  const { row, col, isFinish, isStart, isWall } = node;
+                  return (
+                    <Node
+                      key={nodeIndex}
+                      col={col}
+                      isFinish={isFinish}
+                      isStart={isStart}
+                      isWall={isWall}
+                      row={row}
+                      mouseIsPressed={this.state.mouseIsPressed}
+                      onMouseDown={(row, col) => this.handleMouseDown(row, col)}
+                      onMouseEnter={(row, col) =>
+                        this.handleMouseEnter(row, col)
+                      }
+                      onMouseUp={() => this.handleMouseUp()}
+                    />
+                  );
+                })}
+              </div>
+            );
+          })}
+          <div className="buttons">
+            <button
+              onClick={this.visualizeDijkstra}
+              disabled={this.state.isRunning}
+            >
+              Visualize
+            </button>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                this.clearBoard();
+              }}
+              disabled={this.state.isRunning}
+            >
+              Clear Board
+            </button>
+          </div>
+        </div>
+      </>
     );
   }
 }
