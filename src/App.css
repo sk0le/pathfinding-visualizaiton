@@ -5,6 +5,7 @@
   padding: 0%;
   box-sizing: border-box;
   font-family: "Roboto", sans-serif;
+  overflow: hidden;
 }
 body {
   background-color: rgb(37, 37, 37);
@@ -83,8 +84,41 @@ nav h1 {
   animation-play-state: running;
 }
 
-/* Animations */
+/* Buttons */
 
+.buttons {
+  width: 30%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 1em;
+}
+
+.btn {
+  background: none;
+  border: none;
+  outline: none;
+
+  padding: 10px 20px;
+
+  background-color: rgb(182, 24, 24);
+  border: 1px solid rgb(182, 24, 24);
+  color: white;
+
+  transition: all 0.4s ease-in;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+.btn:hover {
+  cursor: pointer;
+  background-color: rgb(221, 23, 23);
+}
+.btn:disabled {
+  background-color: rgb(61, 7, 7);
+  cursor: unset;
+}
+
+/* Animations */
 @keyframes visitedAnimation {
   0% {
     transform: scale(0.3);
@@ -109,14 +143,8 @@ nav h1 {
 @keyframes wallAnimation {
   0% {
     transform: scale(0.5);
-    background-color: rgb(22, 22, 22);
-    border-radius: 100%;
+    background-color: rgb(104, 104, 104);
   }
-
-  50% {
-    background-color: rgb(32, 32, 32);
-  }
-
   75% {
     transform: scale(1.2);
     background-color: rgb(61, 61, 61);

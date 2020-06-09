@@ -59,18 +59,21 @@ class SortingVisualizer extends Component {
       document.getElementById(`node-${node.row}-${node.col}`).className =
         "node";
     }
-    if (visitedNodesInOrder[0].col === 15) {
-      document.getElementById(
-        `node-${startNode.row}-${startNode.col}`
-      ).className = "node node-start";
-    }
-    if (visitedNodesInOrder[visitedNodesInOrder.length - 1].col === 35) {
-      document.getElementById(
-        `node-${finishNode.row}-${finishNode.col}`
-      ).className = "node node-finish";
-    }
-    const newGrid = getGrid();
 
+    // Todo : find better solution to this problem
+    document.getElementById(
+      `node-${startNode.row}-${startNode.col}`
+    ).className = "node node-start";
+    document.getElementById(
+      `node-${finishNode.row}-${finishNode.col}`
+    ).className = "node node-finish";
+    document.getElementById(`node-15-0`).className = "node";
+    document.getElementById(`node-16-1`).className = "node";
+    document.getElementById(`node-17-2`).className = "node";
+    document.getElementById(`node-18-3`).className = "node";
+    document.getElementById(`node-19-4`).className = "node";
+
+    const newGrid = getGrid();
     this.setState({
       grid: newGrid,
     });
@@ -78,6 +81,7 @@ class SortingVisualizer extends Component {
     console.log(visitedNodesInOrder);
   }
 
+  randomWalls() {}
   animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
     for (let i = 0; i <= visitedNodesInOrder.length; i++) {
       if (i === visitedNodesInOrder.length) {
@@ -149,6 +153,7 @@ class SortingVisualizer extends Component {
             <button
               onClick={this.visualizeDijkstra}
               disabled={this.state.isRunning}
+              className="btn"
             >
               Visualize
             </button>
@@ -158,8 +163,12 @@ class SortingVisualizer extends Component {
                 this.clearBoard();
               }}
               disabled={this.state.isRunning}
+              className="btn"
             >
               Clear Board
+            </button>
+            <button disabled={this.state.isRunning} className="btn">
+              Random Walls
             </button>
           </div>
         </div>
