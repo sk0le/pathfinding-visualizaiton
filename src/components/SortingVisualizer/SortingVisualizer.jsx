@@ -5,11 +5,12 @@ import {
 } from "../../algorithms/djikstra";
 import Node from "../Node/Node";
 import Navbar from "../Navbar/Navbar";
+import Footer from "../Footer/Footer";
 
-const START_NODE_ROW = 10;
-const START_NODE_COL = 15;
-const FINISH_NODE_ROW = 10;
-const FINISH_NODE_COL = 35;
+const START_NODE_ROW = 0;
+const START_NODE_COL = 0;
+const FINISH_NODE_ROW = 19;
+const FINISH_NODE_COL = 49;
 
 class SortingVisualizer extends Component {
   constructor(props) {
@@ -17,12 +18,14 @@ class SortingVisualizer extends Component {
     this.state = {
       grid: [],
       mouseIsPressed: false,
+      sentence: "Start the algorithm!",
       isRunning: false,
     };
 
     this.visualizeDijkstra = this.visualizeDijkstra.bind(this);
     this.animateDijkstra = this.animateDijkstra.bind(this);
     this.clearBoard = this.clearBoard.bind(this);
+    this.randomWalls = this.randomWalls.bind(this);
   }
 
   componentDidMount() {
@@ -53,6 +56,12 @@ class SortingVisualizer extends Component {
     const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
     const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
 
+    const newGrid = getGrid();
+    this.setState({
+      grid: newGrid,
+      sentence: "Start the algorithm!",
+    });
+
     for (let i = 0; i < visitedNodesInOrder.length; i++) {
       const node = visitedNodesInOrder[i];
 
@@ -69,19 +78,29 @@ class SortingVisualizer extends Component {
     ).className = "node node-finish";
     document.getElementById(`node-15-0`).className = "node";
     document.getElementById(`node-16-1`).className = "node";
+    document.getElementById(`node-17-0`).className = "node";
     document.getElementById(`node-17-2`).className = "node";
+    document.getElementById(`node-18-1`).className = "node";
     document.getElementById(`node-18-3`).className = "node";
+    document.getElementById(`node-19-2`).className = "node";
     document.getElementById(`node-19-4`).className = "node";
-
-    const newGrid = getGrid();
-    this.setState({
-      grid: newGrid,
-    });
-
-    console.log(visitedNodesInOrder);
+    document.getElementById(`node-19-21`).className = "node";
   }
 
-  randomWalls() {}
+  randomWalls(e) {
+    const { grid } = this.state;
+
+    for (let i = 0; i < 20; i++) {
+      for (let j = 0; j < 50; j++) {
+        let randomNum = Math.random();
+        if (randomNum < 0.2) {
+          const newGrid = getNewGridWithWallToggled(grid, i, j);
+          this.setState({ grid: newGrid });
+        }
+      }
+    }
+  }
+
   animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
     for (let i = 0; i <= visitedNodesInOrder.length; i++) {
       if (i === visitedNodesInOrder.length) {
@@ -106,6 +125,13 @@ class SortingVisualizer extends Component {
           "node node-shortest-path";
       }, 50 * i);
     }
+
+    if (nodesInShortestPathOrder.length === 1) {
+      this.setState({ sentence: "No possible path!" });
+    } else {
+      this.setState({ sentence: "Done!" });
+    }
+
     this.setState({ isRunning: false });
   }
 
@@ -123,6 +149,7 @@ class SortingVisualizer extends Component {
     return (
       <>
         <Navbar />
+        <h1 className="finish">{this.state.sentence}</h1>
         <div className="visualize">
           {this.state.grid.map((row, rowIndex) => {
             return (
@@ -167,11 +194,16 @@ class SortingVisualizer extends Component {
             >
               Clear Board
             </button>
-            <button disabled={this.state.isRunning} className="btn">
+            <button
+              disabled={this.state.isRunning}
+              className="btn"
+              onClick={this.randomWalls}
+            >
               Random Walls
             </button>
           </div>
         </div>
+        <Footer />
       </>
     );
   }
