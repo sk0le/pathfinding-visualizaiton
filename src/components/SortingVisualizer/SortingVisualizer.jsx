@@ -7,10 +7,10 @@ import Node from "../Node/Node";
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
 
-const START_NODE_ROW = 0;
-const START_NODE_COL = 0;
-const FINISH_NODE_ROW = 19;
-const FINISH_NODE_COL = 49;
+const START_NODE_ROW = 10;
+const START_NODE_COL = 15;
+const FINISH_NODE_ROW = 10;
+const FINISH_NODE_COL = 35;
 
 class SortingVisualizer extends Component {
   constructor(props) {
@@ -19,7 +19,11 @@ class SortingVisualizer extends Component {
       grid: [],
       mouseIsPressed: false,
       sentence: "Start the algorithm!",
-      isRunning: false,
+      // isRunning: false,
+      // startNodeRow: 0,
+      // startNodeCol: 0,
+      // finishNodeRow: 19,
+      // finishNodeCol: 19,
     };
 
     this.visualizeDijkstra = this.visualizeDijkstra.bind(this);
@@ -82,6 +86,7 @@ class SortingVisualizer extends Component {
     document.getElementById(`node-17-2`).className = "node";
     document.getElementById(`node-18-1`).className = "node";
     document.getElementById(`node-18-3`).className = "node";
+    document.getElementById(`node-19-0`).className = "node";
     document.getElementById(`node-19-2`).className = "node";
     document.getElementById(`node-19-4`).className = "node";
     document.getElementById(`node-19-21`).className = "node";
@@ -150,7 +155,7 @@ class SortingVisualizer extends Component {
       <>
         <Navbar />
         <h1 className="finish">{this.state.sentence}</h1>
-        <div className="visualize">
+        <div className="visualize" id="visualize">
           {this.state.grid.map((row, rowIndex) => {
             return (
               <div key={rowIndex} className="div-node">
@@ -222,7 +227,14 @@ const getGrid = () => {
   return grid;
 };
 
-const createNode = (col, row) => {
+const createNode = (
+  col,
+  row
+  // startNodeRow,
+  // startNodeCol,
+  // finishNodeRow,
+  // finishNodeCol
+) => {
   return {
     col,
     row,
